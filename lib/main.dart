@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
         theme: theme(),
         home: const HomeScreen(),
         onGenerateRoute: AppRouter.onGenerateRoute,
-        initialRoute: CheckoutScreen.routeName,
+        initialRoute: SplashScreen.routeName,
       ),
     );
   }

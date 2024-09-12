@@ -18,7 +18,8 @@ class Cart extends Equatable {
   }
 
   //getter for subtotal price
-  double get subtotal => products.fold(0, (total, current) => total + current.price);
+  double get subtotal =>
+      products.fold(0, (total, current) => total + current.price);
 
   // function for delivery price
   double deliveryFee(subtotal) {
@@ -34,7 +35,7 @@ class Cart extends Equatable {
       return 'You have Free Delivery';
     } else {
       double missing = 30.0 - subtotal;
-      return 'Add \$${missing.toStringAsFixed(2)} for FREE delivery';
+      return 'Add\$${missing.toStringAsFixed(2)} for FREE delivery';
     }
   }
 

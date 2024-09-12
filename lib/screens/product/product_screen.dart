@@ -1,11 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:e_commerce/blocs/blocs.dart';
 
 import 'package:flutter/material.dart';
 
 import 'package:e_commerce/models/models.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../widgets/widgets.dart';
 

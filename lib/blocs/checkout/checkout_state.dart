@@ -20,7 +20,7 @@ final class CheckoutLoaded extends CheckoutState {
   final String? deliveryFee;
   final String? total;
   final List<Product>? products;
-  final Checkout? checkout;
+  final Checkout checkout;
 
   CheckoutLoaded(
       {this.fullName,

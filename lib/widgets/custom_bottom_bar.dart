@@ -22,7 +22,7 @@ class CustomBottomBar extends StatelessWidget {
         child: (screen == '/product')
             ? AddToCartNavBar(product: product!)
             : (screen == '/cart')
-                ? GoToCheckoutNavBar()
+                ? const GoToCheckoutNavBar()
                 : (screen == '/checkout')
                     ? const CheckoutBottomBar()
                     : HomeBottomBar(),
@@ -178,16 +178,33 @@ class CheckoutBottomBar extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        ElevatedButton(
-          onPressed: () {},
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.white,
-            shape: const RoundedRectangleBorder(),
-          ),
-          child: Text(
-            'ORDER NOW',
-            style: Theme.of(context).textTheme.displayMedium,
-          ),
+        BlocBuilder<CheckoutBloc, CheckoutState>(
+          builder: (context, state) {
+            if (state is CheckoutLoading) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            if (state is CheckoutLoaded) {
+              return ElevatedButton(
+                onPressed: () {
+                  context
+                      .read<CheckoutBloc>()
+                      .add(ConfirmCheckout(checkout: state.checkout));
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  shape: const RoundedRectangleBorder(),
+                ),
+                child: Text(
+                  'ORDER NOW',
+                  style: Theme.of(context).textTheme.displayMedium,
+                ),
+              );
+            } else {
+              return const Text('STh went wrong');
+            }
+          },
         ),
       ],
     );

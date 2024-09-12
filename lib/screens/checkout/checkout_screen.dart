@@ -3,6 +3,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:e_commerce/blocs/blocs.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../widgets/widgets.dart';
 
@@ -18,13 +19,6 @@ class CheckoutScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController emailController = TextEditingController();
-    final TextEditingController nameController = TextEditingController();
-    final TextEditingController addressController = TextEditingController();
-    final TextEditingController cityController = TextEditingController();
-    final TextEditingController coutryController = TextEditingController();
-    final TextEditingController zipCodeController = TextEditingController();
-
     return Scaffold(
       appBar: const CustomAppBar(title: 'Checkout'),
       bottomNavigationBar: const CustomBottomBar(
@@ -32,37 +26,62 @@ class CheckoutScreen extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'CUSTOMER INFORMATION',
-                style: Theme.of(context).textTheme.displayMedium,
-              ),
-              _buildTextFormField(emailController, context, 'Email'),
-              _buildTextFormField(nameController, context, 'Full name'),
-              Text(
-                'DELIVERY INFORMATION',
-                style: Theme.of(context).textTheme.displayMedium,
-              ),
-              _buildTextFormField(addressController, context, 'Address'),
-              _buildTextFormField(cityController, context, 'City'),
-              _buildTextFormField(coutryController, context, 'Country'),
-              _buildTextFormField(zipCodeController, context, 'Zip Code'),
-              Text(
-                'ORDER SUMMARY',
-                style: Theme.of(context).textTheme.displayMedium,
-              ),
-              const OrderSummary()
-            ]),
+        child: BlocBuilder<CheckoutBloc, CheckoutState>(
+          builder: (context, state) {
+            if (state is CheckoutLoading) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            if (state is CheckoutLoaded) {
+              return Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'CUSTOMER INFORMATION',
+                      style: Theme.of(context).textTheme.displayMedium,
+                    ),
+                    _buildTextFormField((value) {
+                      context.read<CheckoutBloc>().add(UpdateCheckout(mail: value));
+                    }, context, 'Email'),
+                    _buildTextFormField((value) {
+                      context.read<CheckoutBloc>().add(UpdateCheckout(fullName: value));
+                    }, context, 'Full name'),
+                    Text(
+                      'DELIVERY INFORMATION',
+                      style: Theme.of(context).textTheme.displayMedium,
+                    ),
+                    _buildTextFormField((value) {
+                      context.read<CheckoutBloc>().add(UpdateCheckout(address: value));
+                    }, context, 'Address'),
+                    _buildTextFormField((value) {
+                      context.read<CheckoutBloc>().add(UpdateCheckout(city: value));
+                    }, context, 'City'),
+                    _buildTextFormField((value) {
+                      context.read<CheckoutBloc>().add(UpdateCheckout(country: value));
+                    }, context, 'Country'),
+                    _buildTextFormField((value) {
+                      context.read<CheckoutBloc>().add(UpdateCheckout(zipCode: value));
+                    }, context, 'Zip Code'),
+                    Text(
+                      'ORDER SUMMARY',
+                      style: Theme.of(context).textTheme.displayMedium,
+                    ),
+                    const OrderSummary()
+                  ]);
+            } else {
+              return const Text('Sth went wrong');
+            }
+          },
+        ),
       ),
     );
   }
 }
 
 Padding _buildTextFormField(
-  TextEditingController controller,
+  Function(String)? onChanged,
   BuildContext context,
   String labelText,
 ) {
@@ -78,7 +97,7 @@ Padding _buildTextFormField(
       ),
       Expanded(
         child: TextFormField(
-          controller: controller,
+          onChanged: onChanged,
           decoration: const InputDecoration(
             isDense: true,
             contentPadding: EdgeInsets.only(left: 10),
